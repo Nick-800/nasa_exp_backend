@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return new UserResource($request->user());
     });
     Route::put('/user/profile', [UserProfileController::class, 'update']);
+    Route::put('/user/fcm-token', [UserProfileController::class, 'updateFcmToken']);
 
     Route::prefix('journals')->group(function () {
         Route::get('/', [JournalController::class, 'index']);
@@ -32,7 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('favorites')->group(function () {
         Route::get('/', [FavoriteController::class, 'index']);
-        Route::post('/toggle', [FavoriteController::class, 'toggle']);
+        Route::post('/', [FavoriteController::class, 'store']);
+        Route::delete('/{favorite}', [FavoriteController::class, 'destroy']);
     });
 
     Route::prefix('nasa')->group(function () {

@@ -46,25 +46,23 @@ it('can fetch public journals', function () {
         ->assertJsonPath('data.0.title', 'Public Journal');
 });
 
-it('can toggle a favorite', function () {
+it('can add and delete a favorite', function () {
     $user = User::factory()->create();
 
     // Add
-    $this->actingAs($user)
-        ->postJson('/api/favorites/toggle', [
+    $response = $this->actingAs($user)
+        ->postJson('/api/favorites', [
             'type' => FavoriteType::APOD->value,
             'external_id' => '2026-07-01',
             'metadata' => ['title' => 'Cool APOD']
         ])
-        ->assertStatus(200)
-        ->assertJson(['status' => 'added']);
+        ->assertStatus(201)
+        ->assertJsonStructure(['data' => ['id', 'type', 'external_id']]);
 
-    // Remove (Toggle)
+    $favoriteId = $response->json('data.id');
+
+    // Remove
     $this->actingAs($user)
-        ->postJson('/api/favorites/toggle', [
-            'type' => FavoriteType::APOD->value,
-            'external_id' => '2026-07-01'
-        ])
-        ->assertStatus(200)
-        ->assertJson(['status' => 'removed']);
+        ->deleteJson("/api/favorites/{$favoriteId}")
+        ->assertStatus(204);
 });
