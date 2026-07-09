@@ -66,3 +66,13 @@ it('can add and delete a favorite', function () {
         ->deleteJson("/api/favorites/{$favoriteId}")
         ->assertStatus(204);
 });
+
+it('can fetch the user profile', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->getJson('/api/user/profile')
+        ->assertStatus(200)
+        ->assertJsonStructure(['data' => ['id', 'email']]);
+});
+

@@ -19,7 +19,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     
-    Route::get('/user/profile', function (Request $request) {
+    Route::get('/user/profile', function (\Illuminate\Http\Request $request) {
         return new UserResource($request->user());
     });
     Route::put('/user/profile', [UserProfileController::class, 'update']);
